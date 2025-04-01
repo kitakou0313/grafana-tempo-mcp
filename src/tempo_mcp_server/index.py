@@ -4,7 +4,8 @@ import sys
 import json
 import requests
 from datetime import datetime
-from modelcontextprotocol import Server, StdioServerTransport
+from mcp import Server, StdioServerTransport
+
 
 class TempoMCPServer:
     def __init__(self):
@@ -28,7 +29,7 @@ class TempoMCPServer:
             "list_tools",
             self.list_tools
         )
-        
+
         self.server.set_request_handler(
             "call_tool",
             self.call_tool
@@ -110,10 +111,12 @@ class TempoMCPServer:
         await self.server.connect(transport)
         print("Tempo MCP Server running", file=sys.stderr)
 
+
 def main():
     import asyncio
     server = TempoMCPServer()
     asyncio.run(server.run())
+
 
 if __name__ == "__main__":
     main()
