@@ -1,3 +1,0 @@
-requests>=2.32.3
-grpcio==1.51.1
-mcp==1.6.0
