@@ -11,7 +11,8 @@ services:
       - ./tempo-data:/tmp/tempo
     ports:
       - "3200:3200"  # Tempo APIポート
-      - "4317:4317"  # OTLPグリフィンポート
+      - "4317:4317"  # OTLP gRPC"
+      - "4318:4318"  # OTLP HTTP
     restart: unless-stopped
 
   # Grafana - 可視化ダッシュボード
