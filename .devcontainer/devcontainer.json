@@ -3,7 +3,9 @@
 {
 	"name": "Node.js & TypeScript",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+	"build":{
+		"dockerfile": "Dockerfile"
+	},
 	"features": {
 		"ghcr.io/devcontainers/features/git:1": {},
 		"ghcr.io/duduribeiro/devcontainer-features/tmux:1": {},
@@ -27,7 +29,7 @@
 			]
 		}
 	},
-	"postCreateCommand": "bash /workspaces/grafana-tempo-mcp/.devcontainer/init.sh",
+	"postCreateCommand": "go install github.com/open-telemetry/opentelemetry-collector-contrib/cmd/telemetrygen@latest",
 	"containerEnv": {
 		"TZ": "Asia/Tokyo"
 	}
