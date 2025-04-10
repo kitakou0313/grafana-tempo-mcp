@@ -75,15 +75,15 @@ fi
 
 # エンドポイントの設定
 if [[ "$PROTOCOL" == "grpc" ]]; then
-  ENDPOINT="localhost:4317"
+  ENDPOINT="tempo:4317"
   HTTP_FLAG=""
 else
-  ENDPOINT="localhost:4318"
+  ENDPOINT="tempo:4318"
   HTTP_FLAG="--otlp-http"
 fi
 
 # コマンドの構築
-CMD="telemetrygen traces --otlp-endpoint $ENDPOINT $HTTP_FLAG --service $SERVICE --child-spans $CHILD_SPANS --workers $WORKERS"
+CMD="telemetrygen traces --otlp-insecure --otlp-endpoint $ENDPOINT $HTTP_FLAG --service $SERVICE --child-spans $CHILD_SPANS --workers $WORKERS"
 
 # 期間またはトレース数の設定
 if [[ -n "$DURATION" ]]; then
