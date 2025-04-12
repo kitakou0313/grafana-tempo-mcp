@@ -41,7 +41,7 @@ interface TraceResponse {
   }[];
 }
 
-class TempoClient {
+export class TempoClient {
   private readonly baseUrl: string;
 
   constructor(baseUrl: string) {
