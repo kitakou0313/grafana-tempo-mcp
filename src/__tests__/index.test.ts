@@ -2,6 +2,7 @@ import axios from 'axios';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import { SpanStatusCode } from '@opentelemetry/api';
 import { TempoClient } from '../index.js';
+import { jest } from '@jest/globals';
 
 // axiosをモック
 jest.mock('axios');
