@@ -1,5 +1,4 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index";
-import { ServerCapabilities } from "../node_modules/@modelcontextprotocol/sdk/dist/types";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
   CallToolRequestSchema,

@@ -8,6 +8,7 @@ import { jest } from '@jest/globals';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
+
 // テスト用のデータ
 const mockTraceResponse = {
   batches: [
