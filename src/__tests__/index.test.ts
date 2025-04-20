@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import { SpanStatusCode } from '@opentelemetry/api';
-import { TempoClient } from '../index.js';
+import { TempoClient } from '../tempoClient.js';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 // axiosをモック
