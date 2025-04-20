@@ -228,10 +228,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("Tempo MCP server running on stdio");
+  // console.error("Tempo MCP server running on stdio");
 }
 
-main().catch((error) => {
-  console.error("Server error:", error);
-  process.exit(1);
-});
+// main().catch((error) => {
+//   console.error("Server error:", error);
+//   process.exit(1);
+// });

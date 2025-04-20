@@ -2,11 +2,20 @@ import axios from 'axios';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import { SpanStatusCode } from '@opentelemetry/api';
 import { TempoClient } from '../index.js';
-import { jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 // axiosをモック
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('axios', () => {
+  return {
+    default: {
+      get: vi.fn(),
+      isAxiosError: vi.fn((error: any) => !!error.isAxiosError)
+    }
+  };
+});
+
+// モック用の変数
+const mockedAxios = axios;
 
 
 // テスト用のデータ
@@ -53,13 +62,13 @@ const mockSearchResponse = {
 
 describe('TempoClient', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('getTraceById', () => {
     it('正常にトレースを取得できること', async () => {
       // axiosのモックを設定
-      mockedAxios.get.mockResolvedValueOnce({ data: mockTraceResponse });
+      (mockedAxios.get as any).mockResolvedValueOnce({ data: mockTraceResponse });
 
       const tempoClient = new TempoClient('http://localhost:3200');
       const result = await tempoClient.getTraceById('test-trace-id');
@@ -71,27 +80,28 @@ describe('TempoClient', () => {
       expect(result).toEqual(mockTraceResponse);
     });
 
-    // it('エラー時にMcpErrorをスローすること', async () => {
-    //   // axiosのモックを設定してエラーをスロー
-    //   const axiosError = new Error('Network Error');
-    //   (axiosError as any).isAxiosError = true;
-    //   mockedAxios.get.mockRejectedValueOnce(axiosError);
+    it('エラー時にMcpErrorをスローすること', async () => {
+      // axiosのモックを設定してエラーをスロー
+      const axiosError = new Error('Network Error');
+      (axiosError as any).isAxiosError = true;
+      (mockedAxios.get as any).mockRejectedValueOnce(axiosError);
+      (mockedAxios.isAxiosError as any).mockReturnValue(true);
 
-    //   const tempoClient = new TempoClient('http://localhost:3200');
+      const tempoClient = new TempoClient('http://localhost:3200');
       
-    //   // McpErrorがスローされることを確認
-    //   await expect(tempoClient.getTraceById('test-trace-id')).rejects.toThrow(McpError);
-    //   await expect(tempoClient.getTraceById('test-trace-id')).rejects.toMatchObject({
-    //     code: ErrorCode.InternalError,
-    //     message: expect.stringContaining('Failed to fetch trace')
-    //   });
-    // });
+      // McpErrorがスローされることを確認
+      await expect(tempoClient.getTraceById('test-trace-id')).rejects.toThrow(McpError);
+      await expect(tempoClient.getTraceById('test-trace-id')).rejects.toMatchObject({
+        code: ErrorCode.InternalError,
+        message: expect.stringContaining('Failed to fetch trace')
+      });
+    });
   });
 
   describe('searchTraces', () => {
     it('サービス名でトレースを検索できること', async () => {
       // axiosのモックを設定
-      mockedAxios.get.mockResolvedValueOnce({ data: mockSearchResponse });
+      (mockedAxios.get as any).mockResolvedValueOnce({ data: mockSearchResponse });
 
       const tempoClient = new TempoClient('http://localhost:3200');
       const result = await tempoClient.searchTraces({ service: 'test-service' });
@@ -107,7 +117,7 @@ describe('TempoClient', () => {
 
     it('タグでトレースを検索できること', async () => {
       // axiosのモックを設定
-      mockedAxios.get.mockResolvedValueOnce({ data: mockSearchResponse });
+      (mockedAxios.get as any).mockResolvedValueOnce({ data: mockSearchResponse });
 
       const tempoClient = new TempoClient('http://localhost:3200');
       const result = await tempoClient.searchTraces({ 
@@ -126,7 +136,7 @@ describe('TempoClient', () => {
 
     it('時間範囲でトレースを検索できること', async () => {
       // axiosのモックを設定
-      mockedAxios.get.mockResolvedValueOnce({ data: mockSearchResponse });
+      (mockedAxios.get as any).mockResolvedValueOnce({ data: mockSearchResponse });
 
       const tempoClient = new TempoClient('http://localhost:3200');
       const result = await tempoClient.searchTraces({ 
@@ -144,21 +154,22 @@ describe('TempoClient', () => {
       expect(result).toEqual(mockSearchResponse.traces);
     });
 
-    // it('エラー時にMcpErrorをスローすること', async () => {
-    //   // axiosのモックを設定してエラーをスロー
-    //   const axiosError = new Error('Network Error');
-    //   (axiosError as any).isAxiosError = true;
-    //   mockedAxios.get.mockRejectedValueOnce(axiosError);
+    it('エラー時にMcpErrorをスローすること', async () => {
+      // axiosのモックを設定してエラーをスロー
+      const axiosError = new Error('Network Error');
+      (axiosError as any).isAxiosError = true;
+      (mockedAxios.get as any).mockRejectedValueOnce(axiosError);
+      (mockedAxios.isAxiosError as any).mockReturnValue(true);
 
-    //   const tempoClient = new TempoClient('http://localhost:3200');
+      const tempoClient = new TempoClient('http://localhost:3200');
       
-    //   // McpErrorがスローされることを確認
-    //   await expect(tempoClient.searchTraces({ service: 'test-service' })).rejects.toThrow(McpError);
-    //   await expect(tempoClient.searchTraces({ service: 'test-service' })).rejects.toMatchObject({
-    //     code: ErrorCode.InternalError,
-    //     message: expect.stringContaining('Failed to search traces')
-    //   });
-    // });
+      // McpErrorがスローされることを確認
+      await expect(tempoClient.searchTraces({ service: 'test-service' })).rejects.toThrow(McpError);
+      await expect(tempoClient.searchTraces({ service: 'test-service' })).rejects.toMatchObject({
+        code: ErrorCode.InternalError,
+        message: expect.stringContaining('Failed to search traces')
+      });
+    });
   });
 });
 
@@ -174,18 +185,18 @@ describe('MCP Server', () => {
   beforeEach(() => {
     // モックサーバーとTempoClientを設定
     mockTempoClient = {
-      getTraceById: jest.fn(),
-      searchTraces: jest.fn()
+      getTraceById: vi.fn(),
+      searchTraces: vi.fn()
     };
     
     // サーバーのリクエストハンドラーをテスト
     mockServer = {
-      setRequestHandler: jest.fn(),
-      connect: jest.fn(),
-      close: jest.fn()
+      setRequestHandler: vi.fn(),
+      connect: vi.fn(),
+      close: vi.fn()
     };
     
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
   
   it('リソーステンプレートが正しく定義されていること', () => {
