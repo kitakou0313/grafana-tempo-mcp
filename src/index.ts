@@ -9,6 +9,7 @@ import {
   ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import { TempoClient } from "./tempoClient.js";
+import { listTools } from "./handlers.js";
 
 const TEMPO_URL = process.env.TEMPO_URL || "http://localhost:3200";
 
@@ -65,47 +66,7 @@ async function main() {
     };
   });
 
-  server.setRequestHandler(ListToolsRequestSchema, async () => {
-    return {
-      tools: [
-        {
-          name: "get_trace",
-          description: "トレースIDを指定してトレース情報を取得",
-          inputSchema: {
-            type: "object",
-            properties: {
-              traceId: {
-                type: "string",
-                description: "取得するトレースのID",
-              },
-            },
-            required: ["traceId"],
-          },
-        },
-        {
-          name: "search_traces",
-          description: "サービス名やタグでトレースを検索",
-          inputSchema: {
-            type: "object",
-            properties: {
-              service: {
-                type: "string",
-                description: "検索対象のサービス名",
-              },
-              tags: {
-                type: "object",
-                description: "検索用のタグ（キーと値のペア）",
-                additionalProperties: {
-                  type: "string",
-                },
-              },
-            },
-            required: ["service"],
-          },
-        },
-      ],
-    };
-  });
+  server.setRequestHandler(ListToolsRequestSchema, listTools);
 
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     switch (request.params.name) {
