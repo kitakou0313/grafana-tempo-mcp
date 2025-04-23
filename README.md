@@ -2,7 +2,7 @@
 
 A Model Context Protocol server
 
-This is a TypeScript-based MCP server that implements a simple notes system. It demonstrates core MCP concepts by providing:
+This is a TypeScript-based MCP server that implements a grafana tempo. It demonstrates core MCP concepts by providing:
 
 - Resources representing text notes with URIs and metadata
 - Tools for creating new notes
