@@ -10,6 +10,8 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { TempoClient } from "./tempoClient.js";
 import { listTools } from "./handlers.js";
+import { get } from "http";
+import { get_trace } from "./tools.js";
 
 const TEMPO_URL = process.env.TEMPO_URL || "http://localhost:3200";
 
@@ -72,15 +74,8 @@ async function main() {
     switch (request.params.name) {
       case "get_trace": {
         const traceId = String(request.params.arguments?.traceId);
-        const trace = await tempoClient.getTraceById(traceId);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(trace, null, 2),
-            },
-          ],
-        };
+        const trace = await get_trace(traceId, tempoClient)
+        return trace;
       }
 
       case "search_traces": {
