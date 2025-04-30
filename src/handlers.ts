@@ -1,4 +1,4 @@
-export async function listTools() {
+async function listTools() {
     return {
         tools: [
         {
@@ -38,4 +38,8 @@ export async function listTools() {
         },
       ],
     }
+}
+
+export {
+  listTools
 }
