@@ -10,7 +10,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { TempoClient } from "./tempoClient.js";
 import { listTools } from "./handlers.js";
-import { get } from "http";
+import { convertDateToUnixTime } from "./utils/utils.js";
 import { get_trace } from "./tools.js";
 
 const TEMPO_URL = process.env.TEMPO_URL || "http://tempo:3200";
@@ -51,10 +51,18 @@ async function main() {
       throw new McpError(ErrorCode.InvalidRequest, `Invalid URI format: ${request.params.uri}`);
     }
 
+    // Date型に変換できない場合はエラーとする
+
     const [, start, end] = match;
+    const startDate = new Date(decodeURIComponent(start))
+    const endData = new Date(decodeURIComponent(end))
+
+    const startTimeUnixTime = convertDateToUnixTime(startDate)
+    const endTimeUnixTime = convertDateToUnixTime(endData)
+
     const traces = await tempoClient.searchTraces({
-      start: decodeURIComponent(start),
-      end: decodeURIComponent(end),
+      start: startTimeUnixTime,
+      end: endTimeUnixTime,
     });
 
     return {

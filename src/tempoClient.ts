@@ -53,8 +53,8 @@ export class TempoClient {
   async searchTraces(query: { 
     service?: string; 
     tags?: Record<string, string>;
-    start?: string;
-    end?: string;
+    start?: number;
+    end?: number;
   }): Promise<TraceResponse[]> {
     try {
       const params = new URLSearchParams();
@@ -67,10 +67,10 @@ export class TempoClient {
         });
       }
       if (query.start) {
-        params.append("start", query.start);
+        params.append("start", String(query.start));
       }
       if (query.end) {
-        params.append("end", query.end);
+        params.append("end", String(query.end));
       }
 
       const response = await axios.get(`${this.baseUrl}/api/search?${params.toString()}`);
