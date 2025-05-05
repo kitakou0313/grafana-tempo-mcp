@@ -141,8 +141,8 @@ describe('TempoClient', () => {
       const tempoClient = new TempoClient('http://localhost:3200');
       const result = await tempoClient.searchTraces({ 
         service: 'test-service',
-        start: '2023-01-01T00:00:00Z',
-        end: '2023-01-02T00:00:00Z'
+        start: 123456789,
+        end: 123456789
       });
 
       // axiosが正しいURLで呼び出されたことを確認
