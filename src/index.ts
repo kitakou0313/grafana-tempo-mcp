@@ -38,7 +38,7 @@ async function main() {
         {
           uriTemplate: "tempo://traces/{start}/{end}",
           name: "指定時間範囲のトレース",
-          description: "開始時刻と終了時刻を指定してトレースを取得",
+          description: "開始時刻と終了時刻を指定してトレースを取得する 時間はISO 8601 formatで指定する必要がある",
           mimeType: "application/json",
         },
       ],
