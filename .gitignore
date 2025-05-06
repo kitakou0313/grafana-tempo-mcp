@@ -5,3 +5,4 @@ build/
 
 tempo/grafana-data/*
 tempo/tempo-data/*
+tempo/prometheus-data/*
