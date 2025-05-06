@@ -11,9 +11,9 @@ import {
 import { TempoClient } from "./tempoClient.js";
 import { listTools } from "./handlers.js";
 import { convertDateToUnixTime } from "./utils/utils.js";
-import { get_trace } from "./tools.js";
+import { get_trace, search_traces } from "./tools.js";
 
-const TEMPO_URL = process.env.TEMPO_URL || "http://tempo:3200";
+const TEMPO_URL = process.env.TEMPO_URL || "http://localhost:3200";
 
 
 async function main() {
@@ -70,7 +70,7 @@ async function main() {
         {
           uri: request.params.uri,
           mimeType: "application/json",
-          text: JSON.stringify(traces, null, 2),
+          text: JSON.stringify(traces, null),
         },
       ],
     };
@@ -89,15 +89,12 @@ async function main() {
       case "search_traces": {
         const service = String(request.params.arguments?.service);
         const tags = request.params.arguments?.tags as Record<string, string> | undefined;
-        const traces = await tempoClient.searchTraces({ service, tags });
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(traces, null, 2),
-            },
-          ],
-        };
+        const start = String(request.params.arguments?.start);
+        const end = String(request.params.arguments?.end);
+        
+        const result = await search_traces(service, tags, start, end, tempoClient);
+        
+        return result;
       }
 
       default:

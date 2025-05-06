@@ -32,8 +32,16 @@ async function listTools() {
                   type: "string",
                 },
               },
+              start: {
+                type: "string",
+                description: "検索開始時刻（ISO 8601形式）",
+              },
+              end: {
+                type: "string",
+                description: "検索終了時刻（ISO 8601形式）",
+              },
             },
-            required: ["service"],
+            required: ["service", "start", "end"],
           },
         },
       ],
