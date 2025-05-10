@@ -60,9 +60,12 @@ async function main() {
     const startTimeUnixTime = convertDateToUnixTime(startDate)
     const endTimeUnixTime = convertDateToUnixTime(endData)
 
+    // TraceQLを使用して検索
     const traces = await tempoClient.searchTraces({
       start: startTimeUnixTime,
       end: endTimeUnixTime,
+      // 時間範囲のみの検索なので、空のTraceQLクエリを指定
+      traceQL: ""
     });
 
     return {
@@ -87,12 +90,13 @@ async function main() {
       }
 
       case "search_traces": {
-        const service = String(request.params.arguments?.service);
+        const service = request.params.arguments?.service ? String(request.params.arguments.service) : undefined;
         const tags = request.params.arguments?.tags as Record<string, string> | undefined;
+        const traceQL = request.params.arguments?.traceQL ? String(request.params.arguments.traceQL) : undefined;
         const start = String(request.params.arguments?.start);
         const end = String(request.params.arguments?.end);
         
-        const result = await search_traces(service, tags, start, end, tempoClient);
+        const result = await search_traces(service || "", tags, start, end, traceQL, tempoClient);
         
         return result;
       }

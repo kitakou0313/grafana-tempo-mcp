@@ -55,17 +55,37 @@ export class TempoClient {
     tags?: Record<string, string>;
     start?: number;
     end?: number;
+    traceQL?: string;
   }): Promise<TraceResponse[]> {
     try {
+      let traceQLQuery = "";
+      
+      // ユーザーが直接TraceQLクエリを指定した場合はそれを使用
+      if (query.traceQL) {
+        traceQLQuery = query.traceQL;
+      } else {
+        // サービス名の条件を追加
+        if (query.service) {
+          traceQLQuery += `{ resource.service.name = "${query.service}" }`;
+        }
+        
+        // タグの条件を追加
+        if (query.tags && Object.keys(query.tags).length > 0) {
+          Object.entries(query.tags).forEach(([key, value]) => {
+            // 既存のクエリがある場合は AND 条件で追加
+            if (traceQLQuery) {
+              traceQLQuery += ` && `;
+            }
+            traceQLQuery += `{ ${key} = "${value}" }`;
+          });
+        }
+      }
+      
       const params = new URLSearchParams();
-      if (query.service) {
-        params.append("service", query.service);
+      if (traceQLQuery) {
+        params.append("q", traceQLQuery);
       }
-      if (query.tags) {
-        Object.entries(query.tags).forEach(([key, value]) => {
-          params.append("tags", `${key}=${value}`);
-        });
-      }
+      
       if (query.start) {
         params.append("start", String(query.start));
       }
@@ -73,7 +93,7 @@ export class TempoClient {
         params.append("end", String(query.end));
       }
 
-      const response = await axios.get(`${this.baseUrl}/api/search?${params.toString()}`);
+      const response = await axios.get(`${this.baseUrl}/api/search/traceql?${params.toString()}`);
       return response.data.traces || [];
     } catch (error) {
       if (axios.isAxiosError(error)) {

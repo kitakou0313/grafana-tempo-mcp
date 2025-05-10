@@ -17,7 +17,7 @@ async function listTools() {
         },
         {
           name: "search_traces",
-          description: "サービス名やタグでトレースを検索",
+          description: "TraceQLを使用してトレースを検索",
           inputSchema: {
             type: "object",
             properties: {
@@ -32,6 +32,10 @@ async function listTools() {
                   type: "string",
                 },
               },
+              traceQL: {
+                type: "string",
+                description: "TraceQLクエリ（直接指定する場合）。指定した場合はserviceとtagsは無視されます。",
+              },
               start: {
                 type: "string",
                 description: "検索開始時刻（ISO 8601形式）",
@@ -41,7 +45,7 @@ async function listTools() {
                 description: "検索終了時刻（ISO 8601形式）",
               },
             },
-            required: ["service", "start", "end"],
+            required: ["start", "end"],
           },
         },
       ],
