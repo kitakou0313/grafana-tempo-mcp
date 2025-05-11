@@ -13,7 +13,7 @@ import { listTools } from "./handlers.js";
 import { convertDateToUnixTime } from "./utils/utils.js";
 import { get_trace, search_traces } from "./tools.js";
 
-const TEMPO_URL = process.env.TEMPO_URL || "http://localhost:3200";
+const TEMPO_URL = process.env.TEMPO_URL || "http://tempo:3200";
 
 
 async function main() {
