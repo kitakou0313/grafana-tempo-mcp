@@ -93,7 +93,7 @@ export class TempoClient {
         params.append("end", String(query.end));
       }
 
-      const response = await axios.get(`${this.baseUrl}/api/search/traceql?${params.toString()}`);
+      const response = await axios.get(`${this.baseUrl}/api/search?${params.toString()}`);
       return response.data.traces || [];
     } catch (error) {
       if (axios.isAxiosError(error)) {
