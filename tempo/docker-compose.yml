@@ -35,7 +35,7 @@ services:
 
   # Grafana - 可視化ダッシュボード
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:12.0.0
     container_name: grafana
     volumes:
       - ./grafana-data:/var/lib/grafana
