@@ -83,7 +83,7 @@ else
 fi
 
 # コマンドの構築
-CMD="telemetrygen traces --otlp-insecure --otlp-endpoint $ENDPOINT $HTTP_FLAG --service $SERVICE --child-spans $CHILD_SPANS --workers $WORKERS"
+CMD="telemetrygen traces --otlp-insecure --otlp-endpoint $ENDPOINT $HTTP_FLAG --service ${SERVICE}-$`head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16 ; echo` --child-spans $CHILD_SPANS --workers $WORKERS"
 
 # 期間またはトレース数の設定
 if [[ -n "$DURATION" ]]; then
