@@ -3,7 +3,7 @@ version: '3'
 services:
   # Grafana Tempo - 分散トレーシングバックエンド
   tempo:
-    image: grafana/tempo:latest
+    image: grafana/tempo:2.7.2
     container_name: tempo
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
