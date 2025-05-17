@@ -37,14 +37,14 @@ services:
     depends_on:
       - init
       - memcached
-
-  k6-tracing:
-    image: ghcr.io/grafana/xk6-client-tracing:v0.0.7
-    environment:
-      - ENDPOINT=tempo:4317
-    restart: always
-    depends_on:
-      - tempo
+  # テストのトレース生成用 Service
+  # k6-tracing:
+  #   image: ghcr.io/grafana/xk6-client-tracing:v0.0.7
+  #   environment:
+  #     - ENDPOINT=tempo:4317
+  #   restart: always
+  #   depends_on:
+  #     - tempo
 
   prometheus:
     image: prom/prometheus:latest
@@ -59,7 +59,7 @@ services:
       - "9090:9090"
 
   grafana:
-    image: grafana/grafana:11.5.2
+    image: grafana/grafana:12.0.0
     volumes:
       - ./grafana-provisioning/datasources/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
     environment:
