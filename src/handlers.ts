@@ -34,7 +34,7 @@ async function listTools() {
               },
               traceQL: {
                 type: "string",
-                description: "TraceQLクエリ（直接指定する場合）。指定した場合はserviceとtagsは無視されます。",
+                description: "TraceQLクエリ（直接指定する場合）。指定した場合はserviceとtagsは無視されます。URLのパスを指定したい場合, { span.http.target =~ \"/api/user/.*/reaction\"}のように指定できます",
               },
               start: {
                 type: "string",
@@ -56,7 +56,7 @@ async function listTools() {
             properties: {
               query: {
                 type: "string",
-                description: "TraceQLメトリクスクエリ（例：'rate({resource.service.name=\"frontend\"})' や 'quantile_over_time({resource.service.name=\"backend\"})'）",
+                description: "TraceQL metricsのクエリ（例：'{ span.http.target =~ \"/api/user/.*/hoge\"} | histogram_over_time(duration)など",
               },
               start: {
                 type: "string",
