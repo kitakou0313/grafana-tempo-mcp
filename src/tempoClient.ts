@@ -2,6 +2,18 @@ import axios from "axios";
 import { SpanStatusCode } from "@opentelemetry/api";
 import { McpError, ErrorCode } from "@modelcontextprotocol/sdk/types.js";
 
+// TraceQL Metricsのレスポンス型定義
+interface MetricsResponse {
+  status: string;
+  data: {
+    resultType: string;
+    result: Array<{
+      metric: Record<string, string>;
+      values: Array<[number, string]>;
+    }>;
+  };
+}
+
 interface TraceResponse {
   batches: {
     resourceSpans: {
@@ -100,6 +112,59 @@ export class TempoClient {
         throw new McpError(
           ErrorCode.InternalError,
           `Failed to search traces: ${error.message}`
+        );
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * TraceQL Metrics APIを使用してメトリクスを取得する
+   * @param query メトリクスクエリパラメータ
+   * @returns メトリクスデータ
+   */
+  async getTraceQLMetrics(query: {
+    q: string;
+    start?: number | string;
+    end?: number | string;
+    since?: string;
+    step?: string;
+    exemplars?: number;
+  }): Promise<MetricsResponse> {
+    try {
+      const params = new URLSearchParams();
+      
+      // 必須パラメータ
+      params.append("q", query.q);
+      
+      // オプションパラメータ
+      if (query.start) {
+        params.append("start", String(query.start));
+      }
+      
+      if (query.end) {
+        params.append("end", String(query.end));
+      }
+      
+      if (query.since) {
+        params.append("since", query.since);
+      }
+      
+      if (query.step) {
+        params.append("step", query.step);
+      }
+      
+      if (query.exemplars) {
+        params.append("exemplars", String(query.exemplars));
+      }
+      
+      const response = await axios.get(`${this.baseUrl}/api/v2/metrics/traceql?${params.toString()}`);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new McpError(
+          ErrorCode.InternalError,
+          `Failed to fetch TraceQL metrics: ${error.message}`
         );
       }
       throw error;

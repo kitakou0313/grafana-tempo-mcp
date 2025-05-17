@@ -11,7 +11,7 @@ import {
 import { TempoClient } from "./tempoClient.js";
 import { listTools } from "./handlers.js";
 import { convertDateToUnixTime } from "./utils/utils.js";
-import { get_trace, search_traces } from "./tools.js";
+import { get_trace, search_traces, get_traceql_metrics } from "./tools.js";
 
 const TEMPO_URL = process.env.TEMPO_URL || "http://tempo:3200";
 
@@ -97,6 +97,19 @@ async function main() {
         const end = String(request.params.arguments?.end);
         
         const result = await search_traces(service || "", tags, start, end, traceQL, tempoClient);
+        
+        return result;
+      }
+      
+      case "get_traceql_metrics": {
+        const query = String(request.params.arguments?.query);
+        const start = request.params.arguments?.start ? String(request.params.arguments.start) : undefined;
+        const end = request.params.arguments?.end ? String(request.params.arguments.end) : undefined;
+        const since = request.params.arguments?.since ? String(request.params.arguments.since) : undefined;
+        const step = request.params.arguments?.step ? String(request.params.arguments.step) : undefined;
+        const exemplars = request.params.arguments?.exemplars ? Number(request.params.arguments.exemplars) : undefined;
+        
+        const result = await get_traceql_metrics(query, start, end, since, step, exemplars, tempoClient);
         
         return result;
       }

@@ -48,6 +48,40 @@ async function listTools() {
             required: ["start", "end"],
           },
         },
+        {
+          name: "get_traceql_metrics",
+          description: "TraceQL Metrics APIを使用してメトリクスを取得",
+          inputSchema: {
+            type: "object",
+            properties: {
+              query: {
+                type: "string",
+                description: "TraceQLメトリクスクエリ（例：'rate({resource.service.name=\"frontend\"})' や 'quantile_over_time({resource.service.name=\"backend\"})'）",
+              },
+              start: {
+                type: "string",
+                description: "検索開始時刻（ISO 8601形式）- endと一緒に使用",
+              },
+              end: {
+                type: "string",
+                description: "検索終了時刻（ISO 8601形式）- startと一緒に使用",
+              },
+              since: {
+                type: "string",
+                description: "相対的な時間範囲（例：'15m'で過去15分）- start/endの代わりに使用可能",
+              },
+              step: {
+                type: "string",
+                description: "時系列データの粒度（例：'15s'で15秒ごとのデータポイント）",
+              },
+              exemplars: {
+                type: "integer",
+                description: "クエリの最大エグゼンプラー数",
+              },
+            },
+            required: ["query"],
+          },
+        },
       ],
     }
 }
