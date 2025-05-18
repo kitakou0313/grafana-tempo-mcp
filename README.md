@@ -1,70 +1,91 @@
 # tempo-server MCP Server
 
-A Model Context Protocol server
+A Model Context Protocol server for Grafana Tempo trace management
 
-This is a TypeScript-based MCP server that implements a grafana tempo. It demonstrates core MCP concepts by providing:
+## 概要
 
-- Resources representing text notes with URIs and metadata
-- Tools for creating new notes
-- Prompts for generating summaries of notes
+TypeScriptベースのMCPサーバーで、Grafana Tempoトレーシングシステムとの統合を提供します。主な機能：
 
-## Features
+- トレースデータのリソース管理
+- トレース検索と取得のためのツール
+- トレースデータの高度な分析
 
-### Resources
-- List and access notes via `note://` URIs
-- Each note has a title, content and metadata
-- Plain text mime type for simple content access
+## 技術スタック
 
-### Tools
-- `create_note` - Create new text notes
-  - Takes title and content as required parameters
-  - Stores note in server state
+- **言語**: TypeScript
+- **ランタイム**: Node.js
+- **通信プロトコル**: Stdio
+- **HTTPクライアント**: Axios
 
-### Prompts
-- `summarize_notes` - Generate a summary of all stored notes
-  - Includes all note contents as embedded resources
-  - Returns structured prompt for LLM summarization
+## 主要依存関係
 
-## Development
+- `@modelcontextprotocol/sdk`: MCPサーバー実装SDK
+- `axios`: HTTPリクエスト用クライアント
+- `@opentelemetry/api`: トレーシングデータ型定義
 
-Install dependencies:
-```bash
-npm install
-```
+## 環境変数
 
-Build the server:
-```bash
-npm run build
-```
+- `TEMPO_URL`: TempoサーバーのベースURL
+  - デフォルト: `http://tempo:3200`
 
-For development with auto-rebuild:
-```bash
-npm run watch
-```
+## 機能
 
-## Installation
+### リソース
+- `trace://` URIを介したトレースデータへのアクセス
+- トレースID、サービス名、タグによる詳細な検索
+- 豊富なメタデータと属性情報
 
-To use with Claude Desktop, add the server config:
+### ツール
+- `get_trace`: トレースIDを指定してトレース情報を取得
+  - 必須パラメータ: `traceId`
+  - 特定のトレースの詳細な情報を取得
 
-On MacOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
+- `search_traces`: TraceQLを使用してトレースを検索
+  - 必須パラメータ: `start`, `end`
+  - オプションパラメータ:
+    - `service`: サービス名による絞り込み
+    - `tags`: タグによる検索
+    - `traceQL`: 高度なクエリ言語による検索
+    - 時間範囲の指定可能
+
+- `get_traceql_metrics`: TraceQL Metrics APIを使用
+  - 必須パラメータ: `query`
+  - オプションパラメータ:
+    - `start`, `end`: 時間範囲の指定
+    - `since`: 相対的な時間範囲
+    - `step`: 時系列データの粒度
+    - `exemplars`: エグゼンプラーの最大数
+
+### APIインテグレーション
+- Grafana Tempoバックエンドとの緊密な連携
+- TraceQLによる高度なトレース検索と分析
+- メトリクス取得と時系列データの詳細な分析
+
+## インストール
+
+### Clineへのインストールの場合
 
 ```json
 {
   "mcpServers": {
-    "tempo-server": {
-      "command": "/path/to/tempo-server/build/index.js"
+    "tempo-trace-server": {
+      "command": "node",
+      "args": ["/path/to/index.js"], // Buildされたindex.jsへのパス
+      "env": {
+        "TEMPO_URL": "http://localhost:3200" // Grafana tempoのAPIリクエストに用いるポート
+      },
+      "disabled": false,
+      "autoApprove": []
     }
   }
 }
+
 ```
 
-### Debugging
+## デバッグ
 
-Since MCP servers communicate over stdio, debugging can be challenging. We recommend using the [MCP Inspector](https://github.com/modelcontextprotocol/inspector), which is available as a package script:
+MCPサーバーはstdioで通信するため、デバッグが難しい場合があります。[MCP Inspector](https://github.com/modelcontextprotocol/inspector)の使用を推奨:
 
 ```bash
 npm run inspector
 ```
-
-The Inspector will provide a URL to access debugging tools in your browser.
