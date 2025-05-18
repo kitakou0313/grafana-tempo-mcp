@@ -123,7 +123,7 @@ async function get_traceql_metrics(
         content: [
             {
                 type: "text",
-                text: JSON.stringify(metrics, null, 2)
+                text: JSON.stringify(metrics, null)
             }
         ]
     };

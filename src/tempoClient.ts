@@ -158,7 +158,7 @@ export class TempoClient {
         params.append("exemplars", String(query.exemplars));
       }
       
-      const response = await axios.get(`${this.baseUrl}/api/v2/metrics/traceql?${params.toString()}`);
+      const response = await axios.get(`${this.baseUrl}/api/metrics/query_range?${params.toString()}`);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
